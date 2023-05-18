@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: Excel2JsonRules
+  m_EditorClassIdentifier: Excel2JsonUnity:Excel2JsonUnity.Editor:Excel2JsonRules
+  excelDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/ExcelFolder
+  exportJsonDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/Json
+  exportCsharpDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/Scripts/ExportCsharp
+  csharpNamespace: Excel2JsonUnity
+  inheritClass: BaseConfig
+  compressJson: 0
