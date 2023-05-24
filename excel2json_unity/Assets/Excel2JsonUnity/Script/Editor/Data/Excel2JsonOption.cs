@@ -27,6 +27,11 @@ namespace Excel2JsonUnity.Editor
         /// 自定义错误消息，用于那些需要填参数的错误信息
         /// </summary>
         public string customErrorMsg;
+        
+        /// <summary>
+        /// 正在收集的excel文件路径
+        /// </summary>
+        public string collectingExcelPath;
 
         /// <summary>
         /// 导出规则

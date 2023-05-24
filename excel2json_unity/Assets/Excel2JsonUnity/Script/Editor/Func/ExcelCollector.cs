@@ -61,15 +61,14 @@ namespace Excel2JsonUnity.Editor
         {
             csharpTypeMap = new Dictionary<string, string>();
             jsonStr = string.Empty;
+            option.collectingExcelPath = filePath;
             using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read);
             var reader = ExcelReaderFactory.CreateOpenXmlReader(stream);
             if (!string.IsNullOrEmpty(reader.ExceptionMessage))
             {
                 option.errorCode = Excel2JsonErrorCode.ExcelFileReadFail;
-                if (Excel2JsonConfig.ErrorMsg.TryGetValue(option.errorCode, out var errorMsg))
-                {
-                    option.customErrorMsg = string.Format(errorMsg, reader.ExceptionMessage);
-                }
+                option.customErrorMsg =
+                    Excel2JsonUtility.CreateCustomErrorMsg(option.errorCode, reader.ExceptionMessage);
 
                 return false;
             }
@@ -143,25 +142,21 @@ namespace Excel2JsonUnity.Editor
                         }
 
                         fieldName = fieldName.Split(".")[0];
-                        var cellStr = HandleCombineCell(i, colCount, rowDataMat, fieldName, ref processedList);
+                        var cellStr = HandleCombineCell(option, i, colCount, rowDataMat, fieldName, ref processedList);
                         tempStrList.Add(cellStr);
                     }
                     else if (isFieldNameGroup)
                     {
                         //字段名是组合，类型不是组合，报错
                         option.errorCode = Excel2JsonErrorCode.FieldSettingError;
-                        if (Excel2JsonConfig.ErrorMsg.TryGetValue(option.errorCode, out var errorMsg))
-                        {
-                            var param = $"文件：{fileName} 字段：{fieldName}";
-                            option.customErrorMsg = string.Format(errorMsg, param, fieldType);
-                        }
-
+                        option.customErrorMsg =
+                            Excel2JsonUtility.CreateCustomErrorMsg(option.errorCode, $"文件：{fileName} 字段：{fieldName}");
                         return false;
                     }
                     else
                     {
                         //普通字段
-                        var cellStr = HandleSingleCell(i, j, rowDataMat, ref processedList);
+                        var cellStr = HandleSingleCell(option, i, j, rowDataMat, ref processedList);
                         tempStrList.Add(cellStr);
                     }
                 }
@@ -215,11 +210,8 @@ namespace Excel2JsonUnity.Editor
                     else
                     {
                         option.errorCode = Excel2JsonErrorCode.TypeNotDefined;
-                        var paramMsg = $"文件：{fileName} 字段：{fieldName} 类型：{fieldType}";
-                        if (Excel2JsonConfig.ErrorMsg.TryGetValue(option.errorCode, out var errorMsg))
-                        {
-                            option.customErrorMsg = string.Format(errorMsg, paramMsg);
-                        }
+                        option.customErrorMsg = Excel2JsonUtility.CreateCustomErrorMsg(option.errorCode,
+                            $"文件：{fileName} 字段：{fieldName} 类型：{fieldType}");
 
                         return false;
                     }
@@ -229,19 +221,20 @@ namespace Excel2JsonUnity.Editor
             return true;
         }
 
-        private static string HandleSingleCell(int row, int col, DataRowCollection rowDataMat,
+        private static string HandleSingleCell(Excel2JsonOption option, int row, int col, DataRowCollection rowDataMat,
             ref List<int> processedList)
         {
             processedList.Add(col);
             var fieldName = rowDataMat[0][col].ToString();
             var fieldType = rowDataMat[1][col].ToString();
             var fieldValue = rowDataMat[row][col];
-            var combine = Combine(fieldName, fieldType, fieldValue);
+            var combine = Combine(option, fieldName, fieldType, fieldValue.ToString());
             var result = $"\t\t{combine}";
             return result;
         }
 
-        private static string HandleCombineCell(int row, int colCount, DataRowCollection rowDataMat,
+        private static string HandleCombineCell(Excel2JsonOption option, int row, int colCount,
+            DataRowCollection rowDataMat,
             string targetFieldName,
             ref List<int> processedList)
         {
@@ -262,7 +255,7 @@ namespace Excel2JsonUnity.Editor
                 filedType = filedType.Split(".")[1];
                 filedName = filedName.Split(".")[1];
                 var fieldValue = rowDataMat[row][i];
-                var combine = Combine(filedName, filedType, fieldValue);
+                var combine = Combine(option, filedName, filedType, fieldValue.ToString());
                 tempStrList.Add(combine);
                 processedList.Add(i);
             }
@@ -281,32 +274,103 @@ namespace Excel2JsonUnity.Editor
             return sb.ToString();
         }
 
-        private static string Combine(string fieldName, string fieldType, object fieldValue)
+        private static string Combine(Excel2JsonOption option, string fieldName, string fieldType, string fieldValue)
         {
             string result;
             switch (fieldType)
             {
                 case "int":
-                    result = $"\"{fieldName}\":{fieldValue}";
+                    var intValue = option.Rules.defaultInt;
+                    if (!string.IsNullOrEmpty(fieldValue))
+                    {
+                        if (Int32.TryParse(fieldValue, out var parse))
+                        {
+                            intValue = parse;
+                        }
+                        else
+                        {
+                            //这里出错无立马返回
+                            option.errorCode = Excel2JsonErrorCode.FieldValueIsNotSpecifiedType;
+                        }
+                    }
+
+                    result = $"\"{fieldName}\":{intValue}";
                     break;
                 case "float":
-                    result = $"\"{fieldName}\":{fieldValue}";
+                    var floatValue = option.Rules.defaultFloat;
+                    if (!string.IsNullOrEmpty(fieldValue))
+                    {
+                        if (float.TryParse(fieldValue, out var parse))
+                        {
+                            floatValue = parse;
+                        }
+                        else
+                        {
+                            option.errorCode = Excel2JsonErrorCode.FieldValueIsNotSpecifiedType;
+                        }
+                    }
+
+                    result = $"\"{fieldName}\":{floatValue}";
                     break;
                 case "string":
-                    result = $"\"{fieldName}\":\"{fieldValue}\"";
+                    var stringValue = option.Rules.defaultString;
+                    if (!string.IsNullOrEmpty(fieldValue))
+                    {
+                        stringValue = fieldValue;
+                    }
+
+                    result = $"\"{fieldName}\":\"{stringValue}\"";
                     break;
                 case "int[]":
-                    result = $"\"{fieldName}\":[{fieldValue}]";
+                    result = string.IsNullOrEmpty(fieldValue)
+                        ? $"\"{fieldName}\":{option.Rules.defaultArray}"
+                        : $"\"{fieldName}\":[{fieldValue}]";
                     break;
                 case "float[]":
-                    result = $"\"{fieldName}\":[{fieldValue}]";
+                    result = string.IsNullOrEmpty(fieldValue)
+                        ? $"\"{fieldName}\":{option.Rules.defaultArray}"
+                        : $"\"{fieldName}\":[{fieldValue}]";
                     break;
                 case "string[]":
-                    result = $"\"{fieldName}\":[\"{fieldValue}\"]";
+                    if (string.IsNullOrEmpty(fieldValue))
+                    {
+                        result = $"\"{fieldName}\":{option.Rules.defaultArray}";
+                    }
+                    else
+                    {
+                        var stringValueArray = fieldValue.Split(",");
+                        if (stringValueArray is not { Length: > 0 })
+                        {
+                            result = $"\"{fieldName}\":{option.Rules.defaultArray}";
+                        }
+                        else
+                        {
+                            var sb = new StringBuilder();
+                            sb.Append($"\"{fieldName}\":[");
+                            for (var i = 0; i < stringValueArray.Length; i++)
+                            {
+                                sb.Append(i != stringValueArray.Length - 1
+                                    ? $"\"{stringValueArray[i]}\","
+                                    : $"\"{stringValueArray[i]}\"");
+                            }
+
+                            sb.Append("]");
+                            result = sb.ToString();
+                        }
+                    }
+
                     break;
                 default:
-                    result = $"\"{fieldName}\":\"{fieldValue}\"";
+                    option.errorCode = Excel2JsonErrorCode.UnknownFieldType;
+                    result = string.Empty;
                     break;
+            }
+
+            if (option.errorCode is Excel2JsonErrorCode.FieldValueIsNotSpecifiedType
+                or Excel2JsonErrorCode.UnknownFieldType)
+            {
+                option.customErrorMsg = Excel2JsonUtility.CreateCustomErrorMsg(option.errorCode,
+                    $"file:{option.collectingExcelPath},field:{fieldName}");
             }
 
             return result;

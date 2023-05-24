@@ -1,6 +1,6 @@
 {
     "name": "Excel2JsonUnity",
-    "rootNamespace": "",
+    "rootNamespace": "Excel2JsonUnity",
     "references": [],
     "includePlatforms": [],
     "excludePlatforms": [],

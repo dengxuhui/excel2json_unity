@@ -15,5 +15,23 @@ namespace Excel2JsonUnity.Editor
             AssetDatabase.SaveAssets();
             return asset;
         }
+
+        /// <summary>
+        /// 创建错误消息
+        /// </summary>
+        /// <param name="errorCode"></param>
+        /// <param name="appendMsg"></param>
+        /// <returns></returns>
+        public static string CreateCustomErrorMsg(Excel2JsonErrorCode errorCode, string appendMsg = "")
+        {
+            if (Excel2JsonConfig.ErrorMsg.TryGetValue(errorCode, out var msg))
+            {
+                return string.Format(msg, appendMsg);
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
     }
 }

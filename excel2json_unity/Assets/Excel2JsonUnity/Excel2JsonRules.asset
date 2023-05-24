@@ -9,12 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 75ffcd70fd83452a97c1d985aefeac6e, type: 3}
   m_Name: Excel2JsonRules
-  m_EditorClassIdentifier: Excel2JsonUnity:Excel2JsonUnity.Editor:Excel2JsonRules
-  excelDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/ExcelFolder
-  exportJsonDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/Json
-  exportCsharpDirectory: /Users/dengxuhui/Work/Personal/Github/excel2json_unity/excel2json_unity/Assets/Sample/Scripts/ExportCsharp
+  m_EditorClassIdentifier: 
+  excelDirectory: Assets/Sample/ExcelFolder
+  exportJsonDirectory: Assets/Sample/Json
+  exportCsharpDirectory: Assets/Sample/Scripts/ExportCsharp
   csharpNamespace: Excel2JsonUnity
-  inheritClass: BaseConfig
+  inheritClass: Excel2JsonUnity.BaseConfig
   compressJson: 0
+  defaultInt: 0
+  defaultString: 
+  defaultFloat: 0
+  defaultArray: '[]'

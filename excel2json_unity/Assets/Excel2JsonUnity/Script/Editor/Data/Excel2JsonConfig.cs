@@ -43,6 +43,8 @@ namespace Excel2JsonUnity.Editor
                 { Excel2JsonErrorCode.ExcelFileReadFail, "excel文件读取失败：{0}" },
                 { Excel2JsonErrorCode.FieldSettingError, "字段设置错误：{0}" },
                 { Excel2JsonErrorCode.TypeNotDefined, "类型未定义：{0}" },
+                { Excel2JsonErrorCode.FieldValueIsNotSpecifiedType, "字段值类型错误：{0}" },
+                { Excel2JsonErrorCode.UnknownFieldType, "未知数据类型：{0}" },
             };
 
         //未知错误
@@ -70,14 +72,20 @@ namespace Excel2JsonUnity.Editor
 
         //没找到excel文件
         AnyExcelFileNotFound,
-        
+
         //excel文件读取失败
         ExcelFileReadFail,
-        
+
         //字段设置错误
         FieldSettingError,
-        
-        //类型为定义
+
+        //类型未定义
         TypeNotDefined,
+
+        //字段值类型错误
+        FieldValueIsNotSpecifiedType,
+
+        //未知数据类型
+        UnknownFieldType,
     }
 }

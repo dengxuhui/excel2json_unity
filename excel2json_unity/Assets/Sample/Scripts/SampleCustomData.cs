@@ -5,7 +5,7 @@ namespace Excel2JsonUnity.Sample
     /// </summary>
     public struct SampleCustomData
     {
-        public string name;
-        public int age;
+        public string Name;
+        public int Age;
     }
 }

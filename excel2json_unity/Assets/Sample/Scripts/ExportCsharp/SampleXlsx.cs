@@ -5,10 +5,11 @@
 //Generate From SampleXlsx.xlsx
 public class SampleXlsx : Excel2JsonUnity.BaseConfig
 {
-	public string StringTest;
+	public string StringField;
 	public float FloatField;
-	public System.Collections.Generic.List<int> ArrayField;
+	public System.Collections.Generic.List<int> IntArrayField;
+	public System.Collections.Generic.List<float> FloatArrayField;
+	public System.Collections.Generic.List<string> StringArrayField;
 	public Excel2JsonUnity.Sample.SampleCustomData Data;
-	public System.Collections.Generic.List<float> Money;
 }
 }
