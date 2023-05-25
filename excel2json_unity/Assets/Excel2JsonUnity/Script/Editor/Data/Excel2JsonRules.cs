@@ -32,11 +32,15 @@ namespace Excel2JsonUnity.Editor
         [Tooltip("空字符串表示没有Namespace，请按需设置")] public string csharpNamespace = "";
 
         /// <summary>
+        /// 继承类对象所在的Assembly
+        /// </summary>
+        public string inheritClassAssembly = "Assembly-CSharp";
+        /// <summary>
         /// 继承类对象，没有则不写
         /// </summary>
         [Tooltip("需要assembly-qualified类型全名字段\nex:SampleNamespace.SampleClass")]
-        public string inheritClass = "";
-
+        public string inheritClassFullName = "";
+        
         /// <summary>
         /// 是否压缩json
         /// </summary>
@@ -160,8 +164,10 @@ namespace Excel2JsonUnity.Editor
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.PropertyField(settings.FindProperty("csharpNamespace"),
                         new GUIContent("C# Namespace"));
-                    EditorGUILayout.PropertyField(settings.FindProperty("inheritClass"),
-                        new GUIContent("Inherit Class"));
+                    EditorGUILayout.PropertyField(settings.FindProperty("inheritClassAssembly"),
+                        new GUIContent("Inherit Class Assembly"));
+                    EditorGUILayout.PropertyField(settings.FindProperty("inheritClassFullName"),
+                        new GUIContent("Inherit Class FullName"));
                     //Json导出设置
                     EditorGUILayout.Separator();
                     EditorGUILayout.LabelField("Json export settings", subtitleStyle);

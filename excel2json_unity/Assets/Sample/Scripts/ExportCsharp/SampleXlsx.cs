@@ -3,7 +3,7 @@
 //Auto Generated Code, Don't Modify
 //see https://github.com/dengxuhui/excel2json_unity
 //Generate From SampleXlsx.xlsx
-public class SampleXlsx : Excel2JsonUnity.BaseConfig
+public class SampleXlsx : Excel2JsonUnity.Sample.SampleBaseConfig
 {
 	public string StringField;
 	public float FloatField;

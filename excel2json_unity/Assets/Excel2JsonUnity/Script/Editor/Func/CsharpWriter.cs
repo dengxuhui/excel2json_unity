@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using UnityEngine;
 
@@ -19,6 +20,17 @@ namespace Excel2JsonUnity.Editor
             var total = csharpDic.Count;
             var rules = option.Rules;
             var namespaceStr = rules.csharpNamespace;
+            //计算继承类
+            Type inheritType = null;
+            if (!string.IsNullOrEmpty(rules.inheritClassAssembly) && !string.IsNullOrEmpty(rules.inheritClassFullName))
+            {
+                var ab = Assembly.Load(rules.inheritClassAssembly);
+                if (ab != null)
+                {
+                    inheritType = ab.GetType(rules.inheritClassFullName);
+                }
+            }
+
             foreach (var kv in csharpDic)
             {
                 var xlsxPath = kv.Key;
@@ -41,20 +53,19 @@ namespace Excel2JsonUnity.Editor
                     sw.WriteLine("//see https://github.com/dengxuhui/excel2json_unity");
                     sw.WriteLine($"//Generate From {Path.GetFileName(xlsxPath)}");
 
-                    Type inheritType = null;
                     //写class
-                    if (!string.IsNullOrEmpty(rules.inheritClass))
+                    if (inheritType != null)
                     {
-                        inheritType = Type.GetType(rules.inheritClass);
-                        sw.WriteLine($"public class {csharpClassName} : {rules.inheritClass}");
+                        sw.WriteLine($"public class {csharpClassName} : {rules.inheritClassFullName}");
                     }
                     else
                     {
                         sw.WriteLine($"public class {csharpClassName}");
                     }
+
                     //class正括号
                     sw.WriteLine("{");
-                    
+
                     //开始写属性
                     foreach (var kv2 in fieldDic)
                     {
@@ -68,7 +79,7 @@ namespace Excel2JsonUnity.Editor
 
                         sw.WriteLine($"\tpublic {fieldType} {fieldName};");
                     }
-                    
+
                     //class反括号
                     sw.WriteLine("}");
 

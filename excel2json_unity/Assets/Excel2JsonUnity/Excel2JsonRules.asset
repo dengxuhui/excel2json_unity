@@ -16,9 +16,9 @@ MonoBehaviour:
   exportJsonDirectory: Assets/Sample/Json
   exportCsharpDirectory: Assets/Sample/Scripts/ExportCsharp
   csharpNamespace: Excel2JsonUnity
-  inheritClass: Excel2JsonUnity.BaseConfig
+  inheritClass: Excel2JsonUnity.Sample.SampleBaseConfig, Assembly-CSharp
   compressJson: 0
   defaultInt: 0
   defaultString: 
   defaultFloat: 0
-  defaultArray: '[]'
+  defaultArray: null
