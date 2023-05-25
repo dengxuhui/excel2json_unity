@@ -1,3 +1,9 @@
+# excel2json_unity
+![export_sample.png](./DocAssets/export_sample.png)
+- 支持Excel导出为json并生成c#定义文件
+- 支持自定义数据类型
+- 支持导出c#文件继承与定义命名空间
+  - 自动删除继承类中已经存在的字段
 # 项目说明
 该工程提供excel配置转json的工具。工具主要包括两个方面：
 - Excel导出窗口。这个窗口比较简陋，包括了"导出所有"与"导出单个文件"两个按钮
