@@ -1,5 +1,4 @@
-using UnityEditor;
-using UnityEngine;
+using System.Reflection;
 
 namespace Excel2JsonUnity.Editor
 {
@@ -34,6 +33,11 @@ namespace Excel2JsonUnity.Editor
         public string collectingExcelPath;
 
         /// <summary>
+        /// 运行时程序集
+        /// </summary>
+        public Assembly assembly;
+
+        /// <summary>
         /// 导出规则
         /// </summary>
         public Excel2JsonRules Rules { get; private set; }
@@ -43,6 +47,7 @@ namespace Excel2JsonUnity.Editor
         {
             errorCode = Excel2JsonErrorCode.None;
             customErrorMsg = string.Empty;
+            assembly = null;
         }
 
         public void Init()

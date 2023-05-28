@@ -11,5 +11,6 @@ public class SampleXlsx : Excel2JsonUnity.Sample.SampleBaseConfig
 	public System.Collections.Generic.List<float> FloatArrayField;
 	public System.Collections.Generic.List<string> StringArrayField;
 	public Excel2JsonUnity.Sample.SampleCustomData Data;
+	public Excel2JsonUnity.Sample.Country EnumField;
 }
 }

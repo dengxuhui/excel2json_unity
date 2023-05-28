@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using Excel;
-using UnityEngine;
 
 namespace Excel2JsonUnity.Editor
 {
@@ -276,7 +276,12 @@ namespace Excel2JsonUnity.Editor
 
         private static string Combine(Excel2JsonOption option, string fieldName, string fieldType, string fieldValue)
         {
-            string result;
+            if (option.errorCode != Excel2JsonErrorCode.None)
+            {
+                return string.Empty;
+            }
+
+            string result = string.Empty;
             switch (fieldType)
             {
                 case "int":
@@ -361,16 +366,34 @@ namespace Excel2JsonUnity.Editor
 
                     break;
                 default:
-                    option.errorCode = Excel2JsonErrorCode.UnknownFieldType;
-                    result = string.Empty;
+                    if (Excel2JsonConfig.DataTypes.TryGetValue(fieldType, out var strType))
+                    {
+                        var type = option.assembly.GetType(strType);
+                        //枚举类型
+                        if (type is { IsEnum: true } && Enum.TryParse(type, fieldValue, true, out var toEnum))
+                        {
+                            result = $"\"{fieldName}\":\"{fieldValue}\"";
+                        }
+                        else
+                        {
+                            option.errorCode = Excel2JsonErrorCode.EnumFieldUndefined;
+                        }
+                    }
+
+                    //尝试解析自定义类型
                     break;
             }
 
-            if (option.errorCode is Excel2JsonErrorCode.FieldValueIsNotSpecifiedType
-                or Excel2JsonErrorCode.UnknownFieldType)
+
+            if (string.IsNullOrEmpty(result) && option.errorCode == Excel2JsonErrorCode.None)
+            {
+                option.errorCode = Excel2JsonErrorCode.UnknownFieldType;
+            }
+
+            if (option.errorCode != Excel2JsonErrorCode.None)
             {
                 option.customErrorMsg = Excel2JsonUtility.CreateCustomErrorMsg(option.errorCode,
-                    $"file:{option.collectingExcelPath},field:{fieldName}");
+                    $"#File:{option.collectingExcelPath} #Field:{fieldName} #Value:{fieldValue}");
             }
 
             return result;

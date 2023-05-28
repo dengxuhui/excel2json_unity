@@ -1,8 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Excel2JsonUnity.Editor
 {
@@ -32,9 +32,10 @@ namespace Excel2JsonUnity.Editor
         [Tooltip("空字符串表示没有Namespace，请按需设置")] public string csharpNamespace = "";
 
         /// <summary>
-        /// 继承类对象所在的Assembly
+        /// 运行时assembly
         /// </summary>
-        public string inheritClassAssembly = "Assembly-CSharp";
+        [Tooltip("运行时程序集")] 
+        public string runtimeAssembly = "Assembly-CSharp";
         /// <summary>
         /// 继承类对象，没有则不写
         /// </summary>
@@ -164,8 +165,8 @@ namespace Excel2JsonUnity.Editor
                     EditorGUILayout.EndHorizontal();
                     EditorGUILayout.PropertyField(settings.FindProperty("csharpNamespace"),
                         new GUIContent("C# Namespace"));
-                    EditorGUILayout.PropertyField(settings.FindProperty("inheritClassAssembly"),
-                        new GUIContent("Inherit Class Assembly"));
+                    EditorGUILayout.PropertyField(settings.FindProperty("runtimeAssembly"),
+                        new GUIContent("Run Time Assembly"));
                     EditorGUILayout.PropertyField(settings.FindProperty("inheritClassFullName"),
                         new GUIContent("Inherit Class FullName"));
                     //Json导出设置

@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
 using Excel2JsonUnity;
-using Excel2JsonUnity.Sample;
 using Newtonsoft.Json;
 using TMPro;
 using UnityEditor;
@@ -25,6 +22,7 @@ public class Main : MonoBehaviour
 
         var id0 = configs[0];
         text.text = $"Name:{id0.Data.Name} Age:{id0.Data.Age}";
+        Debug.Log($"Country::{id0.EnumField}");
 #endif
     }
 

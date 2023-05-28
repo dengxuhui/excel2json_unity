@@ -16,9 +16,8 @@
 excel导出json的同时会生成类型定义文件
 - `Export C# Directory`设置导出C#的目录，目录需要为工程根目录下的目录
 - `C# Namespace`如果导出的C#文件需要定义命名空间，可以在这里设置，如果需要，设置为空就行
-- `Inherit Class Assembly`与`Inherit Class FullName`用于导出C#需要基础类的时候配置使用
-  - `Inherit Class Assembly`设置基础类所在的程序集，如果没有特殊定义一般为`Assembly-CSharp`
-  - `Inherit Class FullName`设置基础类的完整名称，例如`UnityEngine.Object`
+- `Run Time Assembly`设置运行时程序集，如果没有特殊定义一般为`Assembly-CSharp`，导出配置与自定义类型映射都会使用到
+- `Inherit Class FullName`设置基础类的完整名称，例如`UnityEngine.Object`
 ### Json导出设置
 - `Export Json Directory`设置导出Json的目录，目录需要为工程根目录下的目录
 - `Compress Json`设置是否压缩Json文件，压缩后的文件体积更小，但是可读性差。压缩是通过去除空格、换行、制表符实现的
@@ -50,5 +49,6 @@ excel导出json的同时会生成类型定义文件
 如果需要扩展类型，首先找到`ExcelCollector`，这个文件是收集所有Excel字段并返回可用字符串数据。新增类型在`Combine`函数中的`Switch-Case`代码块中
 
 # 未来开发计划
+- [x] 支持自定义数据类型（枚举，结构体）
 - [ ] 进一步压缩Json文件，目前只是去除了空格、换行、制表符。可以实现压缩字段，并配置序列化来实现json文件的压缩。
 - [ ] 使用`USS`美化Editor界面

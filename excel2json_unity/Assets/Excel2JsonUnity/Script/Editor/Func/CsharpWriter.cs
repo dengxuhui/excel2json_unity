@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using UnityEngine;
 
 namespace Excel2JsonUnity.Editor
 {
@@ -22,9 +21,9 @@ namespace Excel2JsonUnity.Editor
             var namespaceStr = rules.csharpNamespace;
             //计算继承类
             Type inheritType = null;
-            if (!string.IsNullOrEmpty(rules.inheritClassAssembly) && !string.IsNullOrEmpty(rules.inheritClassFullName))
+            if (!string.IsNullOrEmpty(rules.runtimeAssembly) && !string.IsNullOrEmpty(rules.inheritClassFullName))
             {
-                var ab = Assembly.Load(rules.inheritClassAssembly);
+                var ab = Assembly.Load(rules.runtimeAssembly);
                 if (ab != null)
                 {
                     inheritType = ab.GetType(rules.inheritClassFullName);

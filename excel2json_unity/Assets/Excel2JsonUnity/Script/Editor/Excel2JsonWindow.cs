@@ -1,4 +1,4 @@
-using System;
+using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 
@@ -43,7 +43,9 @@ namespace Excel2JsonUnity.Editor
             {
                 _option.Reset();
                 _option.explortCsharp = true;
+                _option.assembly = Assembly.Load(_option.Rules.runtimeAssembly);
                 FuncExporter.Start(_option);
+                _option.Reset();
             }
 
             GUILayout.Label("---------------------");
@@ -63,6 +65,7 @@ namespace Excel2JsonUnity.Editor
                     _option.explortCsharp = true;
                     _option.singleExcelPath = selectedPath;
                     FuncExporter.Start(_option);
+                    _option.Reset();
                 }
             }
 
